@@ -1,19 +1,19 @@
 <?php
-	
+
 switch(@$_GET['type']){
 	case 'singleCallback':
-	
+
 		$qz =  [
 			"callback"=>'setContent',
 			"options"=>[
-				'selector' => '.qzAjax:eq(0)',
+				//'selector' => '.qzAjax:eq(0)',
 				'html' => 'singleCallback setContent DONE',
 			]
 		];
-	
+
 	break;
 	case 'multiCallback':
-	
+
 		$qz =  [
 			"callbacks" => [
 		    	"type"=>'parallel',
@@ -35,27 +35,27 @@ switch(@$_GET['type']){
 				]
 			]
 		];
-	
+
 	break;
 	case 'data':
-	
+
 		$qz =  [
 			"callback" =>'debug',
 			"options" => [
 				'log' => 'qzAjax callback | received DATA: '.$_REQUEST['qData']['foo']
 			]
 		];
-	
+
 	break;
-	default: 
-		
+	default:
+
 		$qz =  [
 			"callback" =>'debug',
 			"options" => [
 				'log' => 'qzAjax callback '.time()
 			]
 		];
-		
+
 	break;
 }
 

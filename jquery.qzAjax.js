@@ -62,13 +62,15 @@
 
             return {data: data, url: url};
         },
+        confirmNeeded = function ($elem,options) {
+          return $elem.data(options.confirmAttributeName) !== undefined;
+        },
         doPost = function ($this, url, data, options) {
             //@TODO crossDomain support with preFlight CORS
             data = data || {};
             if (!url) {
                 url = window.location;
             }
-            options = $.extend(true, {}, $.fn.qzAjax.defaults, options || {});
 
             //@TODO set to optional
             if ($.type(data) === 'object') {
@@ -123,8 +125,19 @@
             post: function ($elem, e, options) {
                 e.preventDefault();
 
-                var params = getPostData(e, $elem);
-                doPost($elem, params.url, params.data, options || {});
+                options = $.extend(true, {}, $.fn.qzAjax.defaults, options || {});
+
+                var confirmPromise = $.Deferred();
+                confirmPromise.done(function(){
+                  var params = getPostData(e, $elem);
+                  doPost($elem, params.url, params.data, options || {});
+                });
+
+                if(confirmNeeded($elem,options)){
+                  options.confirmAction($elem,options,confirmPromise);
+                } else {
+                  confirmPromise.resolve();
+                }
             }
         },
         init = function (options) {
@@ -186,6 +199,15 @@
                 event: 'click'
             }
         ],
+        confirmAttributeName: 'confirm',
+        confirmAction: function($elem,options,confirmPromise){
+            var confirmText = $elem.data(options.confirmAttributeName);
+            if(confirm(confirmText)){
+              confirmPromise.resolve();
+            } else {
+              confirmPromise.reject();
+            }
+        },
         loadingClass: 'qzAjaxLoading',
         loadingBefore: function ($elem, options) {
             $elem.addClass(options.loadingClass);

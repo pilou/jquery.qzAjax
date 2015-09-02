@@ -1,5 +1,19 @@
 $(function () {
 
+    $('.qzAjaxCustomConfirm').qzAjax({
+      confirmAttributeName: 'custom-confirm',
+      confirmAction: function($elem, options, confirmPromise) {
+        // create here your awesome confirm dialog
+        if (confirm("Sure?")) {
+          confirmPromise.resolve();
+        } else {
+          confirmPromise.reject();
+        }
+      }
+    });
+
+  	$('.qzAjaxConfirm').qzAjax();
+
     $('.qzAjax').qzAjax({
         preventDoubleAjax: false
     });
@@ -9,9 +23,9 @@ $(function () {
     $('.qzAjax').qzAjax({
         preventDoubleAjax: false
     });
-    
+
     $.fn.qzAjaxLive('.qzAjax');
-    
+
     $('body').append('<a href="/test.php" class="qzAjax">LIVE LINK</a>');
 
     $.fn.qzAjax('setCallbacks', {
@@ -33,7 +47,7 @@ $(function () {
     });
 
     $('a.qzAjax').trigger('click');
-    
+
     setTimeout(function () {
         $('a.qzAjax').trigger('click');
         $('form.qzAjax').trigger('submit');
